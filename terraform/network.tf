@@ -112,7 +112,7 @@ resource "azurerm_network_interface" "myNic3" {
     subnet_id                      = azurerm_subnet.mySubnet.id 
     private_ip_address_allocation  = "Static"
     private_ip_address             = "10.0.1.12"
-    public_ip_address_id           = azurerm_public_ip.myPublicIp1.id
+    public_ip_address_id           = azurerm_public_ip.myPublicIp3.id
   }
 
     tags = {
@@ -150,7 +150,7 @@ resource "azurerm_network_interface" "myNic4" {
     subnet_id                      = azurerm_subnet.mySubnet.id 
     private_ip_address_allocation  = "Static"
     private_ip_address             = "10.0.1.20"
-    public_ip_address_id           = azurerm_public_ip.myPublicIp1.id
+    public_ip_address_id           = azurerm_public_ip.myPublicIp4.id
   }
 
     tags = {
