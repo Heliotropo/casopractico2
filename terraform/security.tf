@@ -1,4 +1,7 @@
-# Security group
+# Voy a crear un grupo de seguridad y su asociación por cada máquina virtual
+
+#----------------------------------------------- 1 -----------------------------------------------------------------------------
+
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
 
 resource "azurerm_network_security_group" "mySecGroup" {
@@ -32,8 +35,8 @@ resource "azurerm_network_interface_security_group_association" "mySecGroupAssoc
 
 }
 
-# Security group
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
+#----------------------------------------------- 2 -----------------------------------------------------------------------------
+
 
 resource "azurerm_network_security_group" "mySecGroup2" {
     name                = "sshtraffic2"
@@ -57,17 +60,13 @@ resource "azurerm_network_security_group" "mySecGroup2" {
     }
 }
 
-# Vinculamos el security group al interface de red
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association
-
 resource "azurerm_network_interface_security_group_association" "mySecGroupAssociation2" {
     network_interface_id      = azurerm_network_interface.myNic2.id
     network_security_group_id = azurerm_network_security_group.mySecGroup2.id
 
 }
 
-# Security group
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
+#----------------------------------------------- 3 -----------------------------------------------------------------------------
 
 resource "azurerm_network_security_group" "mySecGroup3" {
     name                = "sshtraffic3"
@@ -91,17 +90,13 @@ resource "azurerm_network_security_group" "mySecGroup3" {
     }
 }
 
-# Vinculamos el security group al interface de red
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association
-
 resource "azurerm_network_interface_security_group_association" "mySecGroupAssociation3" {
     network_interface_id      = azurerm_network_interface.myNic3.id
     network_security_group_id = azurerm_network_security_group.mySecGroup3.id
 
 }
 
-# Security group
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
+#----------------------------------------------- 4 -----------------------------------------------------------------------------
 
 resource "azurerm_network_security_group" "mySecGroup4" {
     name                = "sshtraffic4"
@@ -125,8 +120,7 @@ resource "azurerm_network_security_group" "mySecGroup4" {
     }
 }
 
-# Vinculamos el security group al interface de red
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_security_group_association
+
 
 resource "azurerm_network_interface_security_group_association" "mySecGroupAssociation4" {
     network_interface_id      = azurerm_network_interface.myNic4.id

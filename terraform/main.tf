@@ -11,6 +11,7 @@ terraform {
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group
 
+#Creo un grupo de recursos sobre el que irá toda la infraestructura
 resource "azurerm_resource_group" "rg" {
     name     =  "CasoPractico2RG"
     location = var.location
@@ -21,7 +22,6 @@ resource "azurerm_resource_group" "rg" {
 
 }
 
-# Storage account
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 
 resource "azurerm_storage_account" "stAccount" {

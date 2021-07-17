@@ -1,4 +1,4 @@
-# Creación de red
+#----------------------------------------------- Creación de red -----------------------------------------------------------------------------
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
 
 resource "azurerm_virtual_network" "myNet" {
@@ -22,6 +22,13 @@ resource "azurerm_subnet" "mySubnet" {
     address_prefixes       = ["10.0.1.0/24"]
 
 }
+
+
+
+#Ahora iré creando las tarjetas de red para cada máquina y le iré asignando una configuración de red
+
+
+#----------------------------------------------- 1 -----------------------------------------------------------------------------
 
 # Create NIC
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface
@@ -61,8 +68,7 @@ resource "azurerm_public_ip" "myPublicIp1" {
 
 }
 
-# Create NIC
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface
+#----------------------------------------------- 2 -----------------------------------------------------------------------------
 
 resource "azurerm_network_interface" "myNic2" {
   name                = "vmnic2"  
@@ -83,9 +89,6 @@ resource "azurerm_network_interface" "myNic2" {
 
 }
 
-# IP pública
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
-
 resource "azurerm_public_ip" "myPublicIp2" {
   name                = "vmip2"
   location            = azurerm_resource_group.rg.location
@@ -99,8 +102,7 @@ resource "azurerm_public_ip" "myPublicIp2" {
 
 }
 
-# Create NIC
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface
+#----------------------------------------------- 3 -----------------------------------------------------------------------------
 
 resource "azurerm_network_interface" "myNic3" {
   name                = "vmnic3"  
@@ -121,8 +123,6 @@ resource "azurerm_network_interface" "myNic3" {
 
 }
 
-# IP pública
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
 
 resource "azurerm_public_ip" "myPublicIp3" {
   name                = "vmip3"
@@ -137,8 +137,7 @@ resource "azurerm_public_ip" "myPublicIp3" {
 
 }
 
-# Create NIC
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface
+#----------------------------------------------- 4 -----------------------------------------------------------------------------
 
 resource "azurerm_network_interface" "myNic4" {
   name                = "vmnic4"  
@@ -158,9 +157,6 @@ resource "azurerm_network_interface" "myNic4" {
     }
 
 }
-
-# IP pública
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip
 
 resource "azurerm_public_ip" "myPublicIp4" {
   name                = "vmip4"

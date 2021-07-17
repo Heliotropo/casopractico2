@@ -1,4 +1,5 @@
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
+
 # crea un service principal y rellena los siguientes datos para autenticar
 provider "azurerm" {
   features {}
