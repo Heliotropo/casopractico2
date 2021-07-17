@@ -1,0 +1,59 @@
+---
+- name: Set timezone to Europe/Madrid
+  timezone:
+    name: Europe/Madrid
+
+- name: Habilitando servicio ntp
+  command: /usr/bin/timedatectl set-ntp true
+
+- name: Desactivando partición de swap
+  shell: swapoff -a
+
+- name: Eliminando swap de la tabla de particiones /etc/fstab
+  replace:
+    path: /etc/fstab
+    regexp: '(^/.*swap*)'
+    replace: '# \1'
+
+- name: Instalando Chrony
+  package:
+    name: 
+      - chrony
+    state: latest
+
+- name: Inicio del servicio chrony
+  systemd: 
+    name: chronyd
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    
+- name: "nfs-utils"
+  dnf:
+    name: nfs-utils
+    state: latest
+
+- name: "nfs4-acl-tools"
+  dnf:
+    name: nfs4-acl-tools
+    state: latest
+
+- name: "wget"
+  dnf:
+    name: wget
+    state: latest
+
+- name: Añadir mv a hosts
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - '10.0.1.10 Master'
+    - '10.0.1.11 Worker01'
+    - '10.0.1.12 Worker02'
+    - '10.0.1.20 NFS'
+
+- name: Desactivar SELinux
+  selinux:
+    state: disabled

@@ -1,0 +1,8 @@
+---
+
+- name: Requisitos previos
+  hosts: NFS
+  become: yes
+  roles:
+    - 2_NFS
+

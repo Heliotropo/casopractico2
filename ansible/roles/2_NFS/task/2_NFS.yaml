@@ -1,0 +1,59 @@
+---
+
+- name: "Instalacion de paquetes: nfs-utils"
+  dnf:
+    name: nfs-utils
+    state: latest
+-
+  name: "net-tools"
+  dnf:
+    name: net-tools
+    state: latest
+
+- name: Inicio del servicio de nfs
+  systemd: 
+    name: nfs-server
+    state: started
+    daemon_reload: yes
+    enabled: yes
+
+- name: Creación de la ruta local de nfs (con max. privilegios)
+  file:
+    path: /srv/nfs
+    state: directory
+    owner: Antonio
+    group: Antonio
+    mode: 0777
+
+- name: Añadidos los host master y workers a exports
+  lineinfile:
+    path: /etc/exports
+    state: present
+    line: "{{ item }}"
+  with_items:
+  - '/srv/nfs	10.0.1.10(rw,sync)'
+  - '/srv/nfs	10.0.1.11(rw,sync)'
+  - '/srv/nfs	10.0.1.12(rw,sync)'
+
+- name: exportfs -r
+  command: exportfs -r
+
+- name: exportfs -s
+  command: exportfs -s
+
+- name: Iniciando firewall
+systemd:
+  name: firewalld
+  state: started
+  enabled: yes
+      
+- name: Abriendo los puertos del firewall
+  firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+      immediate: yes
+  with_items: 
+    - "nfs"
+    - "rpc-bind"
+    - "mountd"

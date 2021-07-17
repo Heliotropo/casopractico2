@@ -1,0 +1,7 @@
+---
+
+- name: Requisitos previos
+  hosts: all
+  become: yes
+  roles:
+    - 1_requisitos

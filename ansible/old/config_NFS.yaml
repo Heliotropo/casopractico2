@@ -1,0 +1,68 @@
+---
+-
+  hosts: nfs
+  tasks:
+    - name: "Instalacion de paquetes: nfs-utils"
+      dnf:
+        name: nfs-utils
+        state: latest
+    -
+      name: "net-tools"
+      dnf:
+        name: net-tools
+        state: latest
+    - name: "Iniciando servicios NFS"
+      service:
+        enabled: true
+        name: "{{ item }}"
+        state: started
+      with_items:
+        - nfs-server
+
+    - name: "Creando directorio /srv/nfs"
+      file:
+        path: /srv/nfs
+        state: directory
+        owner: Antonio
+        group: Antonio
+        
+    -
+      name: "Agregar mv a exports"
+      lineinfile:
+        dest: /etc/exports
+        line: "{{item.line}}"
+      with_items:
+        - { line: '/srv/nfs 10.0.1.20(rw,sync,no_root_squash,no_subtree_check)' }
+        - { line: '/srv/nfs 10.0.1.10(rw,sync,no_root_squash,no_subtree_check)' }
+        - { line: '/srv/nfs 10.0.1.11(rw,sync,no_root_squash,no_subtree_check)' }
+
+    - name: "Exportr nueva config"
+      command:
+        cmd: exportfs -r
+
+    - name: Reinicio del servicio de firewall
+      systemd:
+       state: restarted
+       daemon_reload: yes
+       name: firewalld
+       enabled: yes
+
+    - name: Abrir puertos
+      firewalld:
+        service: "{{item}}"
+        permanent: true
+        state: enabled
+      with_items:
+        - nfs
+        - rpc-bind
+        - mountd
+
+    - name: Reinicio del servicio de firewall
+      shell: firewall-cmd --reload
+
+    - name: Reinicio del servicio de firewall
+      systemd:
+       state: restarted
+       daemon_reload: yes
+       name: firewalld
+       enabled: yes
