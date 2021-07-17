@@ -1,0 +1,32 @@
+---
+- hosts: master
+  become: yes
+  vars_files:
+  - vars
+  tasks:
+  - name: Bajando imagenes de kubernetes
+    shell: kubeadm config images pull
+
+  - name: Reseteando el servicio de kubernetes
+    shell: kubeadm reset -f
+    register: output
+
+  - name: Iniando el cluster
+    shell: kubeadm init --pod-network-cidr={{cidr_v}}
+    register: output
+
+  - name: Guardando logs (debug)
+    local_action: copy content={{ output.stdout }} dest={{ token_file }}
+    become: False
+
+  - name: Copia de admin conf
+    shell: |
+     mkdir -p $HOME/.kube
+     sudo cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
+     sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  
+  - name: Instalación de plugin de red
+    command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  
+  - name: Aplicando cambio
+    command: kubectl apply -f https://raw.githubusercontent.com/haproxytech/kubernetes-ingress/v1.5/deploy/haproxy-ingress.yaml      
