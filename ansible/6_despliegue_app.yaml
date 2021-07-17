@@ -1,0 +1,8 @@
+---
+
+- name: Despliegue app
+  hosts: Master
+  become: yes
+  roles:
+    - 6_despliegue_app
+

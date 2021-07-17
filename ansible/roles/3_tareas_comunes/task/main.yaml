@@ -1,0 +1,2 @@
+---
+- include_tasks: 3_tareas_comunes.yaml

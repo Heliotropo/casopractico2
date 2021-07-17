@@ -1,0 +1,8 @@
+---
+
+- name: Tareas comunes a ambas maquinas
+  hosts: kubernetes:children
+  become: yes
+  roles:
+    - 3_tareas_comunes
+

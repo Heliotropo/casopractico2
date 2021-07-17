@@ -1,0 +1,81 @@
+---
+
+- name: modprobe br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Activar Masquerade
+  firewalld:  
+    masquerade: yes
+    state: enabled
+    permanent: yes
+    zone: public
+    
+- name: net.bridge.bridge-nf-call-iptables
+  become: yes
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Eliminar repo donwload.docker.com_linux_centos_docker-ce-repo
+  yum_repository:
+    name: donwload.docker.com_linux_centos_docker-ce-repo
+    state: absent
+
+- name: Instalacion de Docker
+  command: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Docker-ce
+  dnf:
+    name:
+      - containerd.io
+      - docker-ce
+      - docker-ce-cli 
+    state: latest
+
+- name: Activar Docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Añado repo de Kubernetes 1/2
+  file:
+    path: /etc/yum.repos.d/kubernetes.repo
+    state: touch
+
+- name: Añado repo de Kubernetes 2/2
+  blockinfile:
+    path: /etc/yum.repos.d/kubernetes.repo
+    block: |
+      [Kubernetes]
+      name=Kubernetes
+      baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+      enabled=1
+      gpgcheck=1
+      repo_gpgcheck=1
+      gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+       https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+
+- name: Instalar Kubernetes
+  dnf:
+    name:
+      - kubelet 
+      - kubeadm 
+      - kubectl
+    state: present
+
+- name: Iniciar servicio Kubernetes
+  systemd:
+    name: kubelet
+    state: started
+    enabled: yes
+
+ 
+ 
+    

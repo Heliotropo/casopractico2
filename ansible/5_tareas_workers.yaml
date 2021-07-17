@@ -1,0 +1,8 @@
+---
+
+- name: Config Workers
+  hosts: workers:children
+  become: yes
+  roles:
+    - 5_workers
+

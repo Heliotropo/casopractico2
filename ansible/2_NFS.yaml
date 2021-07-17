@@ -1,6 +1,6 @@
 ---
 
-- name: Requisitos previos
+- name: NFS
   hosts: NFS
   become: yes
   roles:
