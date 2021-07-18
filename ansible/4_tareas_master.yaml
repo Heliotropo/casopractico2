@@ -4,5 +4,5 @@
   hosts: master
   become: yes
   roles:
-    - 4_Master
+    - 4_master
 

@@ -1,93 +1,94 @@
 ---
--
-  hosts: Master
-  become: true
-  tasks:
-    - name: Reset Kubernetes
-      command:
-        cmd: kubeadm reset --force
 
-    - name: Activar el firewall
-      systemd:
-       state: restarted
-       daemon_reload: yes
-       name: firewalld
-       enabled: yes
+- name: Resetear configuracion de  Kubernetes
+  command:
+    cmd: kubeadm reset --force
 
-    - name: Abrir los puertos
-      firewalld:
-        port: "{{item}}"
-        permanent: true
-        state: enabled
-      with_items:
-        - 6443/tcp
-        - 2379-2380/tcp
-        - 10250/tcp
-        - 10251/tcp
-        - 10252/tcp
-        - 10255/tcp
-        - 8285/tcp
-        - 8472/tcp
-    
-    - name: Abrir puertos para los workers
-      firewalld:
-       permanent: true
-       state: enabled
-       rich_rule: "{{ item }}"
-      with_items:
-        - "rule family=ipv4 source address=10.0.1.11/32 accept"
-        - "rule family=ipv4 source address=10.0.1.12/32 accept" 
+- name: Activar el firewall
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: firewalld
+    enabled: yes
 
-    - name: Abrir puertos para Kubernetes
-      firewalld:
-       permanent: true
-       zone: public
-       state: enabled
-       rich_rule: "rule family=ipv4 source address=172.17.0.0/16 accept"
+- name: Abrir los puertos
+  firewalld:
+    port: "{{item}}"
+    permanent: true
+    state: enabled
+  with_items:
+    - 6443/tcp
+    - 2379-2380/tcp
+    - 10250/tcp
+    - 10251/tcp
+    - 10252/tcp
+    - 10255/tcp
+    - 8285/tcp
+    - 8472/tcp
 
-    - name: Recargar firewalld
-      shell: firewall-cmd --reload
+- name: Abrir puertos para los workers
+  firewalld:
+    permanent: true
+    state: enabled
+    rich_rule: "{{ item }}"
+  with_items:
+    - "rule family=ipv4 source address=10.0.1.11/32 accept"
+    - "rule family=ipv4 source address=10.0.1.12/32 accept" 
 
-    - name: Configurar imagenes pull kubeadm
-      command:
-        cmd: kubeadm config images pull
+- name: Abrir puertos para Kubernetes
+  firewalld:
+    permanent: true
+    zone: public
+    state: enabled
+    rich_rule: "rule family=ipv4 source address=172.17.0.0/16 accept"
 
-    - name: Crear red pod
-      command:
-        cmd: kubeadm init --pod-network-cidr 192.169.0.0/16 
+- name: Recargar firewalld
+  shell: firewall-cmd --reload
 
-    - name: /root/.kube
-      file:
-        path: /root/.kube
-        state: directory
+- name: Configurar imagenes pull kubeadm
+  command:
+    cmd: kubeadm config images pull
 
-    - name: "cp /etc/kubernetes/admin.conf to /root/.kube/config"
-      copy:
-        remote_src: yes
-        src: /etc/kubernetes/admin.conf
-        dest: /root/.kube/config
-        owner: root
-        group: root
+- name: Crear red pod
+  command:
+    cmd: kubeadm init --pod-network-cidr 192.169.0.0/16 
 
-    - name: Creacion SDN
-      command:
-       cmd: kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+- name: "Autorizar al usuario root acceder al cluster 1/2"
+  file:
+    path: /root/.kube
+    state: directory
 
-    - name: Aplicar cambios SDN
-      command:
-       cmd: kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
+- name: "Autorizar al usuario root acceder al cluster 2/2"
+  copy:
+    remote_src: yes
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    owner: root
+    group: root
 
-    - name: Instalacion de Calico
-      get_url:
-        url: https://docs.projectcalico.org/manifests/custom-resources.yaml            
-        dest: /home/antonio/ 
+- name: Creacion SDN
+  command:
+    cmd: kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
 
-    - name: Cambio ip en custom-resources.yaml
-      replace:
-        path: /home/antonio/custom-resources.yaml
-        regexp: '192.168.0.0'
-        replace: '192.169.0.0'
+- name: Aplicar cambios SDN
+  command:
+    cmd: kubectl apply -f https://docs.projectcalico.org/manifests/canal.yaml
 
-    - name: Aplicar los cambios
-      command:
-        cmd: kubectl apply -f /home/antonio/custom-resources.yaml
+- name: Instalacion de Calico
+  get_url:
+    url: https://docs.projectcalico.org/manifests/custom-resources.yaml            
+    dest: /home/antonio/ 
+
+- name: Cambio ip en custom-resources.yaml
+  replace:
+    path: /home/antonio/custom-resources.yaml
+    regexp: '192.168.0.0'
+    replace: '192.169.0.0'
+
+- name: Aplicar los cambios
+  command:
+    cmd: kubectl apply -f /home/antonio/custom-resources.yaml
+
+- name: Reiniciar servicio
+  command:
+    cmd: systemctl restart kubelet
