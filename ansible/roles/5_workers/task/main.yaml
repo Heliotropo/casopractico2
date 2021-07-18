@@ -1,0 +1,2 @@
+---
+- include_tasks: 5_workers.yaml

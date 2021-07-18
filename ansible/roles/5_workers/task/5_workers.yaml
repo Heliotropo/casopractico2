@@ -1,0 +1,25 @@
+---
+
+- name: Activar el firewall
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: firewalld
+    enabled: yes
+
+- name: Abrir los puertos
+  firewalld:
+    port: "{{item}}"
+    permanent: true
+    state: enabled
+  with_items:
+     - 10250/tcp
+     - 30000-32767/tcp
+
+- name: reload service firewalld
+  systemd:
+    name: firewalld
+    state: reloaded
+
+# Despues de realizar este proceso es necesario añadir los workers a el cluster. 
+# Ejemplo: kubeadm join 192.168.1.110:6443 --token gmk4le.8gsfpknu99k78qut --discovery-token-ca-cert-hash 

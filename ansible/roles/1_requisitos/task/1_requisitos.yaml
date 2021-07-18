@@ -9,7 +9,7 @@
 - name: Desactivando partición de swap
   shell: swapoff -a
 
-- name: Eliminando swap de la tabla de particiones /etc/fstab
+- name: "Eliminando swap de la tabla de particiones /etc/fstab"
   replace:
     path: /etc/fstab
     regexp: '(^/.*swap*)'
@@ -43,7 +43,7 @@
     name: wget
     state: latest
 
-- name: Añadir mv a hosts
+- name: "Añadir mv a hosts"
   lineinfile:
     path: /etc/hosts
     state: present

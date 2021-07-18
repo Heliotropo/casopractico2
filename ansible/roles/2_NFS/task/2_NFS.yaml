@@ -5,7 +5,7 @@
     name: nfs-utils
     state: latest
 -
-  name: "net-tools"
+  name: "Instalacion de paquetes: net-tools"
   dnf:
     name: net-tools
     state: latest
@@ -39,7 +39,7 @@
   shell: systemctl status nfs-server.service
   register: output 
 
-- name: Añadidos los host master y workers a exports
+- name: "Añadidos los host master y workers a exports"
   lineinfile:
     path: /etc/exports
     state: present
@@ -49,10 +49,10 @@
   - '/srv/nfs	10.0.1.11(rw,sync)'
   - '/srv/nfs	10.0.1.12(rw,sync)'
 
-- name: "exportfs -r"
+- name: "Exportar el directorio que he creado: exportfs -r"
   command: exportfs -r
 
-- name: "exportfs -s"
+- name: "Exportar el directorio que he creado: exportfs -s"
   command: exportfs -s
 
 - name: Iniciando firewall

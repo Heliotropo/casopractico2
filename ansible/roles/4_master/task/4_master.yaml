@@ -1,6 +1,6 @@
 ---
 
-- name: Resetear configuracion de  Kubernetes
+- name: Resetear configuracion de Kubernetes
   command:
     cmd: kubeadm reset --force
 

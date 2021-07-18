@@ -1,6 +1,6 @@
 ---
 
-- name: "modprobe br_netfilter"
+- name: "Instalar plugin br_netfilter"
   modprobe:
     name: br_netfilter
     state: present
@@ -12,7 +12,7 @@
     permanent: yes
     zone: public
     
-- name: "net.bridge.bridge-nf-call-iptables"
+- name: "Cambiar parametro net.bridge.bridge-nf-call-iptables"
   become: yes
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
