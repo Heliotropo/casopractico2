@@ -1,6 +1,6 @@
 ---
 
-- name: modprobe br_netfilter
+- name: "modprobe br_netfilter"
   modprobe:
     name: br_netfilter
     state: present
@@ -12,7 +12,7 @@
     permanent: yes
     zone: public
     
-- name: net.bridge.bridge-nf-call-iptables
+- name: "net.bridge.bridge-nf-call-iptables"
   become: yes
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
@@ -21,7 +21,7 @@
     state: present
     reload: yes
 
-- name: Eliminar repo donwload.docker.com_linux_centos_docker-ce-repo
+- name: "Eliminar repo donwload.docker.com_linux_centos_docker-ce-repo"
   yum_repository:
     name: donwload.docker.com_linux_centos_docker-ce-repo
     state: absent
@@ -29,7 +29,7 @@
 - name: Instalacion de Docker
   command: dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-- name: Docker-ce
+- name: "Docker-ce"
   dnf:
     name:
       - containerd.io
@@ -37,18 +37,18 @@
       - docker-ce-cli 
     state: latest
 
-- name: Activar Docker
+- name: "Activar Docker"
   systemd:
     name: docker
     state: started
     enabled: yes
 
-- name: Añado repo de Kubernetes 1/2
+- name: "Agregar repo de Kubernetes 1/2"
   file:
     path: /etc/yum.repos.d/kubernetes.repo
     state: touch
 
-- name: Añado repo de Kubernetes 2/2
+- name: "Añado repo de Kubernetes 2/2"
   blockinfile:
     path: /etc/yum.repos.d/kubernetes.repo
     block: |

@@ -1,5 +1,5 @@
 ---
-- name: Set timezone to Europe/Madrid
+- name: "Ajustar zona horaria a Europe/Madrid"
   timezone:
     name: Europe/Madrid
 
@@ -28,17 +28,17 @@
     daemon_reload: yes
     enabled: yes
     
-- name: "nfs-utils"
+- name: "Instalacion de nfs-utils"
   dnf:
     name: nfs-utils
     state: latest
 
-- name: "nfs4-acl-tools"
+- name: "Instalacion de nfs4-acl-tools"
   dnf:
     name: nfs4-acl-tools
     state: latest
 
-- name: "wget"
+- name: "Instalacion de wget"
   dnf:
     name: wget
     state: latest

@@ -1,7 +1,7 @@
 ---
 
 - name: Configuracion Master
-  hosts: Master
+  hosts: master
   become: yes
   roles:
     - 4_Master

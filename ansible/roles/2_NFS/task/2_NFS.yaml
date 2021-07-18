@@ -10,7 +10,7 @@
     name: net-tools
     state: latest
 
-- name: Creación de la ruta local de nfs (con max. privilegios)
+- name: "Creación de la ruta local de nfs (con max. privilegios)"
   file:
     path: /srv/nfs
     state: directory
@@ -19,14 +19,14 @@
     mode: 0777
   
 - name: Montar el directorio NFS 
-mount:
-  fstype: nfs
-  opts: defaults
-  dump: 0
-  passno: 0
-  state: mounted
-  src: "10.0.1.20:/srv/nfs"
-  path: "/srv/nfs"
+  mount:
+    fstype: nfs
+    opts: defaults
+    dump: 0
+    passno: 0
+    state: mounted
+    src: "10.0.1.20:/srv/nfs"
+    path: "/srv/nfs"
 
 - name: Inicio del servicio de nfs
   systemd: 
@@ -34,6 +34,10 @@ mount:
     state: started
     daemon_reload: yes
     enabled: yes
+
+- name: Comprobar NFS OK
+  shell: systemctl status nfs-server.service
+  register: output 
 
 - name: Añadidos los host master y workers a exports
   lineinfile:
@@ -45,25 +49,25 @@ mount:
   - '/srv/nfs	10.0.1.11(rw,sync)'
   - '/srv/nfs	10.0.1.12(rw,sync)'
 
-- name: exportfs -r
+- name: "exportfs -r"
   command: exportfs -r
 
-- name: exportfs -s
+- name: "exportfs -s"
   command: exportfs -s
 
 - name: Iniciando firewall
-systemd:
-  name: firewalld
-  state: started
-  enabled: yes
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
       
 - name: Abriendo los puertos del firewall
-  firewalld:
-      service: "{{ item }}"
-      state: enabled
-      permanent: yes
-      immediate: yes
-  with_items: 
-    - "nfs"
-    - "rpc-bind"
-    - "mountd"
+  shell: |
+    firewall-cmd --permanent --add-service=nfs
+    firewall-cmd --permanent --add-service=rpc-bind
+    firewall-cmd --permanent --add-service=mountd
+    firewall-cmd --reload
+  register: output 
+
+- name: Aplicar configuracion del firewall
+  shell: firewall-cmd --reload

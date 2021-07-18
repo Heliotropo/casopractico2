@@ -6,17 +6,15 @@ ansible_user=ansible
 Master ansible_connection=local
 
 [workers]
-Worker01 ansible_host=10.0.1.11
-Worker02 ansible_host=10.0.1.12
+worker01 ansible_host=10.0.1.11
+worker02 ansible_host=10.0.1.12
 
 [nfs]
 NFS ansible_host=10.0.1.20
 
 [kubernetes:children]
-worker01
-worker02
+workers
 master
 
 [workers:children]
-worker01
-worker02
+workers
